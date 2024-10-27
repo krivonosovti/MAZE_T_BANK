@@ -3,6 +3,7 @@ package backend.academy.maze.pathFinder.AStarFinder;
 import backend.academy.maze.Cell;
 import backend.academy.maze.Coordinate;
 import backend.academy.maze.Maze;
+import backend.academy.maze.Path;
 import backend.academy.maze.pathFinder.Node;
 import backend.academy.maze.pathFinder.PathFinder;
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.PriorityQueue;
 public class AStarPathFinder implements PathFinder {
 
     @Override
-    public List<Coordinate> findPath(Maze maze, Coordinate start, Coordinate end) {
+    public Path findPath(Maze maze, Coordinate start, Coordinate end) {
         int height = maze.getHeight();
         int width = maze.getWidth();
         Cell[][] grid = maze.getGrid();
@@ -38,14 +39,14 @@ public class AStarPathFinder implements PathFinder {
             Coordinate currentCoord = current.getCoordinate();
 
             if (currentCoord.equals(end)) {
-                return reconstructPath(current);
+                return new Path(reconstructPath(current), current.getGCost());
             }
 
             // Обработка соседних клеток
             processNeighbors(current, maze, gCost, fCost, openSet, directions, end);
         }
 
-        return Collections.emptyList();  // Если путь не найден
+        return new Path(Collections.emptyList(), 0);  // Если путь не найден
     }
 
     // Инициализация массивов стоимости

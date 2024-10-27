@@ -6,12 +6,12 @@ import backend.academy.maze.Edge;
 import backend.academy.maze.Maze;
 import backend.academy.maze.factory.Distribution;
 import backend.academy.maze.factory.MazeGenerator;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class PrimCicleMazeGenerator implements MazeGenerator {
-        private final Random random = new Random();
+        private final SecureRandom random = new SecureRandom();
         private static final int HUNDRED = 100;
         private static final int CICLE_P = 10;
         private Distribution distribution = new Distribution();
@@ -62,7 +62,6 @@ public class PrimCicleMazeGenerator implements MazeGenerator {
                     // Добавляем новые соседние клетки к фронту
                     addFrontierCells(to.row(), to.col(), height, width, frontiers);
                 }
-
                 // Добавляем случайные циклы с вероятностью 10%
                 if (random.nextInt(HUNDRED) < CICLE_P) { // Вероятность цикла 10%
                     addRandomCycle(height, width, grid);

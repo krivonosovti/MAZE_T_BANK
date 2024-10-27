@@ -2,6 +2,7 @@ package backend.academy;
 
 import backend.academy.maze.Coordinate;
 import backend.academy.maze.Maze;
+import backend.academy.maze.Path;
 import backend.academy.maze.display.MazeDisplay;
 import backend.academy.maze.display.UnicodeMazeDisplay;
 import backend.academy.maze.factory.MazeGenerator;
@@ -9,7 +10,6 @@ import backend.academy.maze.factory.MazeGeneratorFactory;
 import backend.academy.maze.pathFinder.PathFinder;
 import backend.academy.maze.pathFinder.PathFinderSelector;
 import java.io.PrintStream;
-import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,11 +43,14 @@ public class GameLogic {
                 printStream.println(display.displayMatrix(maze));
             }
             Coordinate start = inputCoordinate(scanner, printStream, maze, "Start (A)");
+            printStream.println("Start (A) = (" + start.col() + ", " + start.row() + ")");
             Coordinate end = inputCoordinate(scanner, printStream, maze, "Finish (B)");
-            List<Coordinate> path = pathFinder.findPath(maze, start, end);
-            if (!path.isEmpty()) {
+            printStream.println("Finish (B) = (" + end.col() + ", " + end.row() + ")");
+            Path path = pathFinder.findPath(maze, start, end);
+            if (!path.getPath().isEmpty()) {
                 printStream.println("Путь найден:");
-                printStream.println(display.display(mazePicture, width, path));
+                printStream.println(display.display(mazePicture, width, path.getPath()));
+                printStream.println("Итоговая стоимость пути: " + path.getCost());
             } else {
                 printStream.println("Путь не найден.");
             }
@@ -102,18 +105,38 @@ public class GameLogic {
         }
         return dimension;
     }
-
     public Coordinate inputCoordinate(Scanner scanner, PrintStream printStream, Maze maze, String pointName) {
-        printStream.printf("Введите координаты %s (формат: x y): ", pointName);
-        int y = scanner.nextInt();
-        int x = scanner.nextInt();
+        printStream.printf("Введите координаты %s (формат: x '/n' y): ", pointName);
+        int y = inputInt(scanner, printStream);
+        int x = inputInt(scanner, printStream);
         while (x < 0 || x >= maze.getHeight() || y < 0 || y >= maze.getWidth()) {
             printStream.println("Ошибка: координаты должны быть внутри лабиринта.");
             printStream.printf("Введите координаты %s: ", pointName);
-            y = scanner.nextInt();
-            x = scanner.nextInt();
+            y = inputInt(scanner, printStream);
+            x = inputInt(scanner, printStream);
         }
         return new Coordinate(x, y);
+    }
+    private int inputInt(Scanner scanner, PrintStream printStream) {
+        String a;
+        int x;
+        while (true) {
+            a = scanner.nextLine();
+            if (isNumeric(a)) {
+                x = Integer.parseInt(a);
+                return x;
+            }
+            printStream.println("Ошибка: Введите цифру.");
+        }
+    }
+
+    private Boolean isNumeric(String x) {
+        try {
+            Integer.parseInt(x);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
     private int readInt(Scanner scanner, PrintStream printStream, int maxValue) {

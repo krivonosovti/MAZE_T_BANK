@@ -26,7 +26,7 @@ class BFSMazePathFinderTest {
         Coordinate start = new Coordinate(0, 0);
         Coordinate end = new Coordinate(2, 2);
 
-        List<Coordinate> path = pathFinder.findPath(maze, start, end);
+        List<Coordinate> path = pathFinder.findPath(maze, start, end).getPath();
 
         assertEquals(5, path.size());
         assertTrue(path.contains(new Coordinate(0, 0)));
@@ -42,7 +42,7 @@ class BFSMazePathFinderTest {
         Coordinate start = new Coordinate(0, 0);
         Coordinate end = new Coordinate(2, 2);
 
-        List<Coordinate> path = pathFinder.findPath(maze, start, end);
+        List<Coordinate> path = pathFinder.findPath(maze, start, end).getPath();
 
         assertTrue(path.isEmpty());
     }
@@ -52,7 +52,7 @@ class BFSMazePathFinderTest {
         Maze maze = createSimpleMaze();
         Coordinate startAndEnd = new Coordinate(1, 1);
 
-        List<Coordinate> path = pathFinder.findPath(maze, startAndEnd, startAndEnd);
+        List<Coordinate> path = pathFinder.findPath(maze, startAndEnd, startAndEnd).getPath();
 
         assertEquals(1, path.size());
         assertTrue(path.contains(startAndEnd));

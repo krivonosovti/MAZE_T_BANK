@@ -25,7 +25,7 @@ public class AStarPathFinderTest {
         Coordinate start = new Coordinate(0, 0);
         Coordinate end = new Coordinate(4, 4);
 
-        List<Coordinate> path = pathFinder.findPath(maze, start, end);
+        List<Coordinate> path = pathFinder.findPath(maze, start, end).getPath();
 
         assertNotNull(path, "Путь не должен быть null");
         assertEquals(9, path.size(), "Длина пути должна быть корректной");
@@ -42,7 +42,7 @@ public class AStarPathFinderTest {
         maze.getGrid()[1][1] = new Cell(1, 1, Cell.Type.WALL, 0);
         maze.getGrid()[0][1] = new Cell(0, 1, Cell.Type.WALL, 0);
 
-        List<Coordinate> path = pathFinder.findPath(maze, start, end);
+        List<Coordinate> path = pathFinder.findPath(maze, start, end).getPath();
 
         assertTrue(path.isEmpty(), "Путь должен быть пустым, если его невозможно найти");
     }
@@ -52,7 +52,7 @@ public class AStarPathFinderTest {
         Coordinate start = new Coordinate(2, 2);
         Coordinate end = new Coordinate(2, 2);
 
-        List<Coordinate> path = pathFinder.findPath(maze, start, end);
+        List<Coordinate> path = pathFinder.findPath(maze, start, end).getPath();
 
         assertEquals(1, path.size(), "Длина пути должна быть 1, если старт и конец совпадают");
         assertEquals(start, path.get(0), "Путь должен содержать только стартовую точку");
@@ -63,7 +63,7 @@ public class AStarPathFinderTest {
         Coordinate start = new Coordinate(0, 0);
         Coordinate end = new Coordinate(0, 4);
 
-        List<Coordinate> path = pathFinder.findPath(maze, start, end);
+        List<Coordinate> path = pathFinder.findPath(maze, start, end).getPath();
 
         assertNotNull(path, "Путь не должен быть null");
         assertEquals(5, path.size(), "Путь должен быть вдоль края лабиринта");

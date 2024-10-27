@@ -9,7 +9,6 @@ public final class MazeGeneratorFactory {
         throw new UnsupportedOperationException("Utility class");
     }
 
-
     public static MazeGenerator createGenerator(AlgorithmType type) {
         return switch (type) {
             case KRUSKAL -> new KruskalMazeGenerator();
