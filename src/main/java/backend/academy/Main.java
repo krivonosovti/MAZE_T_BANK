@@ -8,6 +8,6 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         GameLogic gameLogic = new GameLogic();
-        gameLogic.game(System.out, scanner); // Передаем PrintStream для вывода
+        gameLogic.game(System.out, scanner);
     }
 }

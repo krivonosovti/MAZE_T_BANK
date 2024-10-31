@@ -9,11 +9,26 @@ import backend.academy.maze.factory.MazeGenerator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import static backend.academy.maze.utils.MazeUtils.addFrontierCells;
 
+/**
+ * Генератор лабиринтов с использованием алгоритма Прима.
+ * Этот класс реализует интерфейс MazeGenerator и создает
+ * лабиринт с использованием метода, основанного на случайном
+ * выборе ребер из набора фронтов.
+ */
 public class PrimMazeGenerator implements MazeGenerator {
     private final Random random = new Random();
     private Distribution distribution = new Distribution();
 
+    /**
+     * Генерирует лабиринт заданного размера.
+     *
+     * @param height высота лабиринта (должна быть нечетным числом)
+     * @param width  ширина лабиринта (должна быть нечетным числом)
+     * @return сгенерированный лабиринт
+     * @throws IllegalArgumentException если высота или ширина четные числа
+     */
     @Override
     public Maze generateMaze(int height, int width) {
         if (height % 2 == 0 || width % 2 == 0) {
@@ -36,7 +51,7 @@ public class PrimMazeGenerator implements MazeGenerator {
 
         // Список возможных ребер (фронт)
         List<Edge> frontiers = new ArrayList<>();
-        addFrontierCells(startRow, startCol, height, width, frontiers);
+        addFrontierCells(startRow, startCol, height, width, frontiers, distribution);
 
         // Алгоритм Прима с добавлением циклов
         while (!frontiers.isEmpty()) {
@@ -58,30 +73,10 @@ public class PrimMazeGenerator implements MazeGenerator {
                     Cell.Type.PASSAGE, distribution.generateWeight());
 
                 // Добавляем новые соседние клетки к фронту
-                addFrontierCells(to.row(), to.col(), height, width, frontiers);
+                addFrontierCells(to.row(), to.col(), height, width, frontiers, distribution);
             }
         }
 
         return new Maze(height, width, grid);
-    }
-
-    // Добавление непосещенных соседних клеток в фронт
-    private void addFrontierCells(int row, int col, int height, int width, List<Edge> frontiers) {
-        if (col - 2 >= 0) {
-            frontiers.add(new Edge(new Coordinate(row, col),
-                new Coordinate(row, col - 2), distribution.generateWeight()));
-        }
-        if (col + 2 < width) {
-            frontiers.add(new Edge(new Coordinate(row, col),
-                new Coordinate(row, col + 2), distribution.generateWeight()));
-        }
-        if (row - 2 >= 0) {
-            frontiers.add(new Edge(new Coordinate(row, col),
-                new Coordinate(row - 2, col), distribution.generateWeight()));
-        }
-        if (row + 2 < height) {
-            frontiers.add(new Edge(new Coordinate(row, col),
-                new Coordinate(row + 2, col), distribution.generateWeight()));
-        }
     }
 }

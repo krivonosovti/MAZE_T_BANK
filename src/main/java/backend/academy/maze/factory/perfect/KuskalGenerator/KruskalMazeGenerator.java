@@ -11,12 +11,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Генератор лабиринтов на основе алгоритма Краскала.
+ * Этот класс реализует интерфейс MazeGenerator и используется для создания лабиринтов.
+ */
 public class KruskalMazeGenerator implements MazeGenerator {
     private SecureRandom secureRandom = new SecureRandom();
-
-    private final Distribution distribution = new Distribution(); // Добавляем генератор среды
+    private final Distribution distribution = new Distribution(); // Генератор случайных весов
     SecureRandom random = new SecureRandom();
 
+    /**
+     * Инициализирует сетку клеток заданного размера, заполняя её стенами.
+     *
+     * @param height высота сетки
+     * @param width ширина сетки
+     * @return двумерный массив клеток, инициализированный стенами
+     */
     public Cell[][] initializeGrid(int height, int width) {
         Cell[][] grid = new Cell[height][width];
 
@@ -30,6 +40,14 @@ public class KruskalMazeGenerator implements MazeGenerator {
         return grid;
     }
 
+    /**
+     * Генерирует лабиринт заданного размера.
+     *
+     * @param height высота лабиринта (должна быть нечётной)
+     * @param width ширина лабиринта (должна быть нечётной)
+     * @return сгенерированный лабиринт
+     * @throws IllegalArgumentException если высота или ширина чётные
+     */
     @Override
     public Maze generateMaze(int height, int width) {
         if (height % 2 == 0 || width % 2 == 0) {
@@ -37,7 +55,6 @@ public class KruskalMazeGenerator implements MazeGenerator {
         }
 
         Cell[][] grid = initializeGrid(height, width);
-
         UnionFind unionFind = new UnionFind();
         List<Edge> edges = new ArrayList<>();
 
@@ -80,6 +97,4 @@ public class KruskalMazeGenerator implements MazeGenerator {
 
         return new Maze(height, width, grid);
     }
-
 }
-

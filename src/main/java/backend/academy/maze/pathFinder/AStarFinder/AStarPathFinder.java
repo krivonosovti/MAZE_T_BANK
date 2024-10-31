@@ -6,14 +6,31 @@ import backend.academy.maze.Maze;
 import backend.academy.maze.Path;
 import backend.academy.maze.pathFinder.Node;
 import backend.academy.maze.pathFinder.PathFinder;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.PriorityQueue;
+import static backend.academy.maze.utils.PathUtils.heuristic;
+import static backend.academy.maze.utils.PathUtils.initializeCostArray;
+import static backend.academy.maze.utils.PathUtils.processNeighbors;
+import static backend.academy.maze.utils.PathUtils.reconstructPath;
 
+/**
+ * Реализация поиска пути с использованием алгоритма A*.
+ * <p>
+ * Этот класс реализует интерфейс {@link PathFinder} и предоставляет метод для нахождения
+ * кратчайшего пути в лабиринте от заданной начальной до конечной точки с использованием
+ * эвристики для оценки стоимости пути.
+ * </p>
+ */
 public class AStarPathFinder implements PathFinder {
 
+    /**
+     * Находит путь от начальной координаты до конечной в заданном лабиринте.
+     *
+     * @param maze  лабиринт, в котором будет осуществляться поиск пути
+     * @param start начальная координата (точка входа)
+     * @param end   конечная координата (точка выхода)
+     * @return объект {@link Path}, представляющий найденный путь или пустой путь, если путь не найден
+     */
     @Override
     public Path findPath(Maze maze, Coordinate start, Coordinate end) {
         int height = maze.getHeight();
@@ -47,68 +64,5 @@ public class AStarPathFinder implements PathFinder {
         }
 
         return new Path(Collections.emptyList(), 0);  // Если путь не найден
-    }
-
-    // Инициализация массивов стоимости
-    private int[][] initializeCostArray(int height, int width, int initialValue) {
-        int[][] costArray = new int[height][width];
-        for (int[] row : costArray) {
-            Arrays.fill(row, initialValue);
-        }
-        return costArray;
-    }
-
-    // Обработка соседних клеток
-    private void processNeighbors(Node current, Maze maze, int[][] gCost, int[][] fCost,
-        PriorityQueue<Node> openSet, int[][] directions, Coordinate end) {
-        int currentRow = current.getCoordinate().row();
-        int currentCol = current.getCoordinate().col();
-        Cell[][] grid = maze.getGrid();
-        int height = maze.getHeight();
-        int width = maze.getWidth();
-
-        for (int[] direction : directions) {
-            int newRow = currentRow + direction[0];
-            int newCol = currentCol + direction[1];
-
-            if (isValid(newRow, newCol, height, width)) {
-                Cell neighborCell = grid[newRow][newCol];
-                if (neighborCell.type() == Cell.Type.WALL) {
-                    continue;  // Пропускаем стены
-                }
-
-                // Рассчитываем новую стоимость пути через эту клетку (gCost)
-                int newGCost = current.getGCost() + neighborCell.weight();
-
-                if (newGCost < gCost[newRow][newCol]) {
-                    gCost[newRow][newCol] = newGCost;
-                    int newFCost = newGCost + heuristic(new Coordinate(newRow, newCol), end);
-                    fCost[newRow][newCol] = newFCost;
-
-                    Node neighborNode = new Node(new Coordinate(newRow, newCol), current, newGCost, newFCost);
-                    openSet.add(neighborNode);
-                }
-            }
-        }
-    }
-
-    // Эвристическая функция Манхэттенского расстояния
-    private int heuristic(Coordinate a, Coordinate b) {
-        return Math.abs(a.row() - b.row()) + Math.abs(a.col() - b.col());
-    }
-
-    // Проверка, что координаты находятся в пределах лабиринта
-    private boolean isValid(int row, int col, int height, int width) {
-        return row >= 0 && row < height && col >= 0 && col < width;
-    }
-
-    // Восстановление пути из узлов
-    private List<Coordinate> reconstructPath(Node endNode) {
-        List<Coordinate> path = new ArrayList<>();
-        for (Node at = endNode; at != null; at = at.getParent()) {
-            path.add(at.getCoordinate());
-        }
-        Collections.reverse(path);  // Путь был восстановлен с конца, нужно развернуть
-        return path;
     }
 }

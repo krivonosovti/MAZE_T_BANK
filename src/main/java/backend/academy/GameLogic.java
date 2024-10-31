@@ -14,16 +14,33 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Класс GameLogic реализует логику игры, связанную с генерацией лабиринта и поиском пути.
+ * Он предоставляет методы для выбора алгоритма генерации лабиринта и поиска пути,
+ * а также для получения пользовательского ввода и отображения результатов.
+ */
 public class GameLogic {
 
     private static final Logger LOGGER = Logger.getLogger(GameLogic.class.getName());
 
+    /** Константа для оценки стоимости */
     public static final int MONEY_RATING = 1;
+    /** Константа для количества доступных алгоритмов поиска пути */
     public static final int PATH_FINDER_AMOUNT = 2;
+    /** Константа для количества доступных генераторов лабиринтов */
     public static final int MAZE_GENERSTOR_AMOUNT = 3;
+    /** Минимальный размер лабиринта */
     public static final int MIN_MAZE_SIZE = 3;
+    /** Максимальный размер лабиринта */
     public static final int MAX_MAZE_SIZE = 1000;
 
+    /**
+     * Основной метод игры, который управляет процессом генерации лабиринта,
+     * выбором алгоритма поиска пути и выводом результатов.
+     *
+     * @param printStream поток вывода для отображения информации
+     * @param scanner объект для чтения пользовательского ввода
+     */
     public void game(PrintStream printStream, Scanner scanner) {
         MazeDisplay display = new UnicodeMazeDisplay();
 
@@ -60,7 +77,14 @@ public class GameLogic {
         }
     }
 
-    public MazeGenerator selectMazeGenerator(Scanner scanner, PrintStream printStream) {
+    /**
+     * Метод для выбора алгоритма генерации лабиринта.
+     *
+     * @param scanner объект для чтения пользовательского ввода
+     * @param printStream поток вывода для отображения информации
+     * @return выбранный генератор лабиринта
+     */
+    protected MazeGenerator selectMazeGenerator(Scanner scanner, PrintStream printStream) {
         printStream.println("Выберите алгоритм генерации лабиринта: ");
         printStream.println("1. Kruskal");
         printStream.println("2. Prim");
@@ -80,7 +104,14 @@ public class GameLogic {
         }
     }
 
-    public PathFinder selectPathFinder(Scanner scanner, PrintStream printStream) {
+    /**
+     * Метод для выбора алгоритма поиска пути.
+     *
+     * @param scanner объект для чтения пользовательского ввода
+     * @param printStream поток вывода для отображения информации
+     * @return выбранный алгоритм поиска пути
+     */
+    protected PathFinder selectPathFinder(Scanner scanner, PrintStream printStream) {
         printStream.println("Выберите алгоритм поиска пути: ");
         printStream.println("1. BFS");
         printStream.println("2. A*");
@@ -97,7 +128,15 @@ public class GameLogic {
         }
     }
 
-    public int inputDimension(Scanner scanner, PrintStream printStream, String dimensionName) {
+    /**
+     * Метод для ввода размерности лабиринта от пользователя.
+     *
+     * @param scanner объект для чтения пользовательского ввода
+     * @param printStream поток вывода для отображения информации
+     * @param dimensionName название размерности (высота или ширина)
+     * @return введенная размерность
+     */
+    protected int inputDimension(Scanner scanner, PrintStream printStream, String dimensionName) {
         int dimension = -1;
         while (dimension % 2 == 0 || dimension < MIN_MAZE_SIZE || dimension > MAX_MAZE_SIZE) {
             printStream.printf("Введите %s (нечетное число больше 3 и меньше %d): ", dimensionName, MAX_MAZE_SIZE);
@@ -105,32 +144,57 @@ public class GameLogic {
         }
         return dimension;
     }
+
+    /**
+     * Метод для ввода координат точки в лабиринте.
+     *
+     * @param scanner объект для чтения пользовательского ввода
+     * @param printStream поток вывода для отображения информации
+     * @param maze лабиринт, в котором будут проверяться координаты
+     * @param pointName название точки (например, "Start" или "Finish")
+     * @return объект Coordinate с введенными координатами
+     */
     public Coordinate inputCoordinate(Scanner scanner, PrintStream printStream, Maze maze, String pointName) {
-        printStream.printf("Введите координаты %s (формат: x '/n' y): ", pointName);
+        printStream.println("Введите точку " + pointName + " (формат: x '/n' y): ");
         int y = inputInt(scanner, printStream);
         int x = inputInt(scanner, printStream);
         while (x < 0 || x >= maze.getHeight() || y < 0 || y >= maze.getWidth()) {
             printStream.println("Ошибка: координаты должны быть внутри лабиринта.");
-            printStream.printf("Введите координаты %s: ", pointName);
+            printStream.println("Введите координаты " + pointName + ": ");
             y = inputInt(scanner, printStream);
             x = inputInt(scanner, printStream);
         }
         return new Coordinate(x, y);
     }
-    private int inputInt(Scanner scanner, PrintStream printStream) {
+
+    /**
+     * Метод для ввода целого числа от пользователя.
+     *
+     * @param scanner объект для чтения пользовательского ввода
+     * @param printStream поток вывода для отображения информации
+     * @return введенное целое число
+     */
+    public int inputInt(Scanner scanner, PrintStream printStream) {
         String a;
         int x;
         while (true) {
             a = scanner.nextLine();
-            if (isNumeric(a)) {
+            if (!isNumeric(a)) {
+                printStream.println("Введите цифру.");
+            } else {
                 x = Integer.parseInt(a);
                 return x;
             }
-            printStream.println("Ошибка: Введите цифру.");
         }
     }
 
-    private Boolean isNumeric(String x) {
+    /**
+     * Метод для проверки, является ли строка числом.
+     *
+     * @param x строка для проверки
+     * @return true, если строка является числом, иначе false
+     */
+    public Boolean isNumeric(String x) {
         try {
             Integer.parseInt(x);
             return true;
@@ -139,7 +203,15 @@ public class GameLogic {
         }
     }
 
-    private int readInt(Scanner scanner, PrintStream printStream, int maxValue) {
+    /**
+     * Метод для чтения целого числа с проверкой на допустимые значения.
+     *
+     * @param scanner объект для чтения пользовательского ввода
+     * @param printStream поток вывода для отображения информации
+     * @param maxValue максимальное допустимое значение
+     * @return введенное целое число
+     */
+    protected int readInt(Scanner scanner, PrintStream printStream, int maxValue) {
         int value = -1;
         while (true) {
             try {

@@ -6,16 +6,29 @@ import backend.academy.maze.Maze;
 import java.util.List;
 import static backend.academy.GameLogic.MONEY_RATING;
 
+/**
+ * Класс UnicodeMazeDisplay реализует интерфейс MazeDisplay и предоставляет
+ * методы для визуализации лабиринта с использованием символов Unicode.
+ * Он определяет, как отображать различные типы ячеек лабиринта в виде
+ * символов, а также как визуализировать путь через лабиринт.
+ */
 public class UnicodeMazeDisplay implements MazeDisplay {
-    private static final int MAZE_ZOOM = 3;
-    private static final char WALL_CHAR = '█';
-    private static final char PASSAGE_CHAR = ' ';
-    private static final char WAY_CHAR = '.';
-    private static final char FOREST_CHAR = '#';
-    private static final char DESERT_CHAR = 'X';
-    private static final char SWAMP_CHAR = '~';
-    private static final char MONEY_CHAR = '$';
+    private static final int MAZE_ZOOM = 3; // Увеличение размера отображаемого лабиринта
+    private static final char WALL_CHAR = '█'; // Символ для стен
+    private static final char PASSAGE_CHAR = ' '; // Символ для проходов
+    private static final char WAY_CHAR = '.'; // Символ для пути
+    private static final char FOREST_CHAR = '#'; // Символ для леса
+    private static final char DESERT_CHAR = 'X'; // Символ для пустыни
+    private static final char SWAMP_CHAR = '~'; // Символ для болота
+    private static final char MONEY_CHAR = '$'; // Символ для денег
 
+    /**
+     * Выбирает символ для отображения в зависимости от веса ячейки.
+     *
+     * @param cell ячейка лабиринта, для которой необходимо выбрать символ.
+     * @return символ, представляющий ячейку.
+     * @throws IllegalArgumentException если вес ячейки не соответствует ни одному из ожидаемых значений.
+     */
     public char selectSimbol(Cell cell) {
         char displayChar;
         //CHECKSTYLE:OFF
@@ -45,12 +58,19 @@ public class UnicodeMazeDisplay implements MazeDisplay {
         return displayChar;
     }
 
+    /**
+     * Отображает лабиринт в виде массива символов.
+     *
+     * @param maze объект лабиринта, который необходимо отобразить.
+     * @return массив символов, представляющий визуализацию лабиринта.
+     */
     @Override
     public char[] display(Maze maze) {
         int height = maze.getHeight();
         int width = maze.getWidth();
         char[] charMaze = new char[height * (width * MAZE_ZOOM + 1)];
         int index = 0;
+
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
                 Cell cell = maze.getCell(row, col);
@@ -68,6 +88,14 @@ public class UnicodeMazeDisplay implements MazeDisplay {
         return charMaze;
     }
 
+    /**
+     * Отображает лабиринт с учетом заданного пути.
+     *
+     * @param mazePicture массив символов, представляющий текущее состояние лабиринта.
+     * @param width ширина лабиринта.
+     * @param path список координат, представляющих путь через лабиринт.
+     * @return обновленный массив символов с отмеченным путем.
+     */
     @Override
     public char[] display(char[] mazePicture, int width, List<Coordinate> path) {
         char[] charMaze = mazePicture;
@@ -87,6 +115,14 @@ public class UnicodeMazeDisplay implements MazeDisplay {
         return charMaze;
     }
 
+    /**
+     * Изменяет символ в заданной ячейке лабиринта на указанный символ.
+     *
+     * @param charMaze массив символов, представляющий лабиринт.
+     * @param width ширина лабиринта.
+     * @param coord координаты ячейки, которую необходимо изменить.
+     * @param centerChar символ, на который нужно изменить ячейку.
+     */
     private void changeCell(char[] charMaze, int width, Coordinate coord, char centerChar) {
         int row = coord.row();
         int col = coord.col();
@@ -94,8 +130,15 @@ public class UnicodeMazeDisplay implements MazeDisplay {
         charMaze[index] = centerChar;
     }
 
-    @SuppressWarnings("checkstyle:MultipleStringLiterals") @Override
-    public  String displayMatrix(Maze maze) {
+    /**
+     * Отображает матрицу связности лабиринта в виде строки.
+     *
+     * @param maze объект лабиринта, для которого необходимо создать матрицу связности.
+     * @return строковое представление матрицы связности.
+     */
+    @SuppressWarnings("checkstyle:MultipleStringLiterals")
+    @Override
+    public String displayMatrix(Maze maze) {
         Cell[][] grid = maze.getGrid();
         int height = maze.getHeight();
         int width = maze.getWidth();

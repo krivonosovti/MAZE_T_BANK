@@ -71,6 +71,7 @@ public class AStarPathFinderTest {
         assertEquals(end, path.get(path.size() - 1), "Конечная точка должна совпадать");
     }
 
+
     private Maze createTestMaze() {
         int height = 5;
         int width = 5;
